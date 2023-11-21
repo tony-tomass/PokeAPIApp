@@ -8,15 +8,12 @@ public class Pokemon {
     private int base_experience;
     private String moves;
     private String abilities;
+    private String image_url;
 
-    public Pokemon(int nat_num, String name, float weight, float height, int base_xp, String move, String ability) {
+    public Pokemon(int nat_num, String name, String image_url) {
         this.id = nat_num;
         this.name = name;
-        this.weight = weight;
-        this.height = height;
-        this.base_experience = base_xp;
-        this.moves = move;
-        this.abilities = ability;
+        this.image_url = image_url;
     }
 
     public int getNat_num() {
@@ -35,6 +32,15 @@ public class Pokemon {
         this.name = name;
     }
 
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    /*
     public float getWeight() {
         return weight;
     }
@@ -74,4 +80,5 @@ public class Pokemon {
     public void setAbility(String ability) {
         this.abilities = ability;
     }
+     */
 }

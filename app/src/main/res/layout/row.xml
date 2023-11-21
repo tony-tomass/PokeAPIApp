@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    
+    <ImageView
+        android:id="@+id/sprite_IV"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:src="@drawable/pokemon_icon"
+        />
+
+    <TextView
+        android:id="@+id/num_row_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:layout_toEndOf="@+id/sprite_IV"
+        android:gravity="center|bottom"
+        android:text="#000:"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/name_row_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:layout_toEndOf="@+id/num_row_TV"
+        android:layout_marginStart="5dp"
+        android:gravity="center|bottom"
+        android:text="Name"
+        android:textSize="14sp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/sprite_IV"
+        />
+
+</RelativeLayout>

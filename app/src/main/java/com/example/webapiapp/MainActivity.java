@@ -1,6 +1,8 @@
 package com.example.webapiapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     TextView ability_value_tv;
     EditText enter_name_et;
     Button search_bt;
+    RecyclerView list_rv;
 
+    List<Pokemon> pkmn_list_for_rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +57,16 @@ public class MainActivity extends AppCompatActivity {
         ability_value_tv = findViewById(R.id.ability_value_TV);
         enter_name_et = findViewById(R.id.enter_name_ET);
         search_bt = findViewById(R.id.search_BT);
+        list_rv = findViewById(R.id.list_RV);
+
+        pkmn_list_for_rv = new ArrayList<>();
 
         image_iv.setImageResource(R.drawable.pokemon_icon);
 
         search_bt.setOnClickListener(search_listener);
+
+        list_rv.setLayoutManager(new LinearLayoutManager(this));
+        list_rv.setAdapter(new MyAdapter(getApplicationContext(), pkmn_list_for_rv));
 
     }
 
@@ -64,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             String name = enter_name_et.getText().toString().trim();
             makeRequest(name);
+            Log.i("List_size", String.valueOf(pkmn_list_for_rv.size()));
         }
     };
 
@@ -96,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
                             .getJSONObject("other")
                             .getJSONObject("official-artwork")
                             .getString("front_default");
+                    String sprite_url = pokemon_list.getJSONObject("sprites")
+                            .getJSONObject("versions")
+                            .getJSONObject("generation-viii")
+                            .getJSONObject("icons")
+                            .getString("front_default");
 
                     nat_num_value_tv.setText(id);
                     name_value_tv.setText(name);
@@ -106,10 +123,12 @@ public class MainActivity extends AppCompatActivity {
                     ability_value_tv.setText(ability_0);
                     Picasso.get().load(image_url).into(image_iv);
 
+                    pkmn_list_for_rv.add(new Pokemon(Integer.parseInt(pokemon_list.getString("id")), name, sprite_url));
+                    list_rv.setAdapter(new MyAdapter(getApplicationContext(), pkmn_list_for_rv));
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
 
                 /*
                 for (Pokemon pokemon : pokemon_list) {
@@ -124,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                     move_value_tv.setText(pokemon.getMove());
                     ability_value_tv.setText(pokemon.getAbility());
                 }
-
                  */
             }
 
