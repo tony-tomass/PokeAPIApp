@@ -20,16 +20,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     Context context;
     List<Pokemon> list;
+    RecyclerViewInterface recyclerViewInterface;
 
-    public MyAdapter(Context context, List<Pokemon> list) {
+    public MyAdapter(Context context, List<Pokemon> list, RecyclerViewInterface recyclerViewInterface) {
         this.context = context;
         this.list = list;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.row, parent, false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.row, parent, false), recyclerViewInterface);
     }
 
     @Override

@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewInterface{
 
     ImageView image_iv;
     TextView nat_num_value_tv;
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     EditText enter_name_et;
     Button search_bt;
     RecyclerView list_rv;
-
     List<Pokemon> pkmn_list_for_rv;
 
     @Override
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         search_bt.setOnClickListener(search_listener);
 
         list_rv.setLayoutManager(new LinearLayoutManager(this));
-        list_rv.setAdapter(new MyAdapter(getApplicationContext(), pkmn_list_for_rv));
+        updateListUI();
 
     }
 
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             String name = enter_name_et.getText().toString().trim();
             makeRequest(name);
-            Log.i("List_size", String.valueOf(pkmn_list_for_rv.size()));
+            //Log.i("List_size", String.valueOf(pkmn_list_for_rv.size()));
         }
     };
 
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     Picasso.get().load(image_url).into(image_iv);
 
                     pkmn_list_for_rv.add(new Pokemon(Integer.parseInt(pokemon_list.getString("id")), name, sprite_url));
-                    list_rv.setAdapter(new MyAdapter(getApplicationContext(), pkmn_list_for_rv));
+                    updateListUI();
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
@@ -162,4 +161,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void updateListUI() {
+        list_rv.setAdapter(new MyAdapter(getApplicationContext(), pkmn_list_for_rv, this));
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        makeRequest(pkmn_list_for_rv.get(position).getName());
+    }
 }
