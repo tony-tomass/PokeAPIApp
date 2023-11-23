@@ -36,7 +36,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.num_tv.setText(String.valueOf(list.get(position).getNat_num()));
+        holder.num_tv.setText(list.get(position).getNat_num());
         holder.name_tv.setText(list.get(position).getName());
         Picasso.get().load(list.get(position).getImage_url()).into(holder.sprite_iv);
     }

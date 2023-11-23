@@ -1,5 +1,6 @@
 package com.example.webapiapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,12 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -39,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     Button search_bt;
     RecyclerView list_rv;
     List<Pokemon> pkmn_list_for_rv;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +76,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         list_rv.setLayoutManager(new LinearLayoutManager(this));
         updateListUI();
 
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        myDB = firebaseDatabase.getReference("pokemon");
+
+        myDB.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.i("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    //
+                }
+            }
+        });
+
     }
 
     View.OnClickListener search_listener = new View.OnClickListener() {
@@ -74,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         public void onClick(View v) {
             String name = enter_name_et.getText().toString().trim();
             makeRequest(name);
+            //pkmn_list_for_rv.add(new Pokemon(nat_num_value_tv.getText().toString()
+            //        , name_value_tv.getText().toString()
+            //        , ));
             //Log.i("List_size", String.valueOf(pkmn_list_for_rv.size()));
         }
     };
@@ -90,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     //https://stackoverflow.com/questions/2591098/how-to-parse-json-in-java
                     // [] = array
                     // {} = object
-                    String id = "#" + pokemon_list.getString("id");
+                    String id = pokemon_list.getString("id");
                     String name = pokemon_list.getString("name");
                     String weight = pokemon_list.getString("weight");
                     String height = pokemon_list.getString("height");
@@ -113,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             .getJSONObject("icons")
                             .getString("front_default");
 
-                    nat_num_value_tv.setText(id);
+                    nat_num_value_tv.setText("#" + id);
                     name_value_tv.setText(name);
                     weight_value_tv.setText(weight);
                     height_value_tv.setText(height);
@@ -122,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     ability_value_tv.setText(ability_0);
                     Picasso.get().load(image_url).into(image_iv);
 
-                    pkmn_list_for_rv.add(new Pokemon(Integer.parseInt(pokemon_list.getString("id")), name, sprite_url));
+                    pkmn_list_for_rv.add(new Pokemon(id, name, sprite_url));
+                    addToDB(id, name, sprite_url);
                     updateListUI();
 
                 } catch (JSONException e) {
@@ -163,6 +191,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     public void updateListUI() {
         list_rv.setAdapter(new MyAdapter(getApplicationContext(), pkmn_list_for_rv, this));
+    }
+
+    public void addToDB(String id, String name, String sprite_url) {
+        //Query query = myDB.orderByKey().equalTo(id);
+        myDB.child(id).child("name").setValue(name);
+        myDB.child(id).child("url").setValue(sprite_url);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.example.webapiapp;
 
 public class Pokemon {
-    private int id;
+    private String id;
     private String name;
     private float weight;
     private float height;
@@ -9,18 +9,19 @@ public class Pokemon {
     private String moves;
     private String abilities;
     private String image_url;
+    private String sprite_url;
 
-    public Pokemon(int nat_num, String name, String image_url) {
+    public Pokemon(String nat_num, String name, String image_url) {
         this.id = nat_num;
         this.name = name;
         this.image_url = image_url;
     }
 
-    public int getNat_num() {
+    public String getNat_num() {
         return id;
     }
 
-    public void setNat_num(int nat_num) {
+    public void setNat_num(String nat_num) {
         this.id = nat_num;
     }
 
@@ -41,6 +42,14 @@ public class Pokemon {
     }
 
     /*
+    public String getSprite_url() {
+        return sprite_url;
+    }
+
+    public void setSprite_url(String sprite_url) {
+        this.sprite_url = sprite_url;
+    }
+
     public float getWeight() {
         return weight;
     }
