@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     TextView ability_value_tv;
     EditText enter_name_et;
     Button search_bt;
+    Button clear_bt;
     RecyclerView list_rv;
     List<Pokemon> pkmn_list_for_rv;
     FirebaseDatabase firebaseDatabase;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         ability_value_tv = findViewById(R.id.ability_value_TV);
         enter_name_et = findViewById(R.id.enter_name_ET);
         search_bt = findViewById(R.id.search_BT);
+        clear_bt = findViewById(R.id.clear_BT);
         list_rv = findViewById(R.id.list_RV);
 
         pkmn_list_for_rv = new ArrayList<>();
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         image_iv.setImageResource(R.drawable.pokemon_icon);
 
         search_bt.setOnClickListener(search_listener);
+        clear_bt.setOnClickListener(clear_listener);
 
         list_rv.setLayoutManager(new LinearLayoutManager(this));
         updateListUI();
@@ -112,6 +115,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             //        , name_value_tv.getText().toString()
             //        , ));
             //Log.i("List_size", String.valueOf(pkmn_list_for_rv.size()));
+        }
+    };
+
+    View.OnClickListener clear_listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            myDB.removeValue();
         }
     };
 
