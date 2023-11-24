@@ -20,9 +20,11 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface{
 
@@ -79,24 +82,31 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         firebaseDatabase = FirebaseDatabase.getInstance();
         myDB = firebaseDatabase.getReference("pokemon");
 
-        myDB.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        myDB.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.i("firebase", "Error getting data", task.getException());
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+                pkmn_list_for_rv.removeAll(pkmn_list_for_rv); //Without this, it adds onto existing list repeatedly
+                for (DataSnapshot child : children) {
+                    String id = child.getKey();
+                    String name = child.child("name").getValue(String.class);
+                    String sprite_url = child.child("url").getValue(String.class);
+                    pkmn_list_for_rv.add(new Pokemon(id, name, sprite_url));
                 }
-                else {
-                    //
-                }
+                updateListUI();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //
             }
         });
-
     }
 
     View.OnClickListener search_listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String name = enter_name_et.getText().toString().trim();
+            String name = enter_name_et.getText().toString().toLowerCase().trim();
             makeRequest(name);
             //pkmn_list_for_rv.add(new Pokemon(nat_num_value_tv.getText().toString()
             //        , name_value_tv.getText().toString()
@@ -141,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             .getString("front_default");
 
                     nat_num_value_tv.setText("#" + id);
-                    name_value_tv.setText(name);
+                    name_value_tv.setText(name.toUpperCase());
                     weight_value_tv.setText(weight);
                     height_value_tv.setText(height);
                     base_xp_value_tv.setText(base_xp);
@@ -149,9 +159,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     ability_value_tv.setText(ability_0);
                     Picasso.get().load(image_url).into(image_iv);
 
-                    pkmn_list_for_rv.add(new Pokemon(id, name, sprite_url));
-                    addToDB(id, name, sprite_url);
+                    Pokemon new_pkmn = new Pokemon(id, name, sprite_url);
+                    Log.i("pkmn", new_pkmn.toString());
+                    if (!pkmn_list_for_rv.contains(new_pkmn)) {
+                        //pkmn_list_for_rv.add(new_pkmn);
+                        addToDB(id, name, sprite_url);
+                    }
+
                     updateListUI();
+                    Log.i("list_size", String.valueOf(pkmn_list_for_rv.size()));
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);

@@ -1,5 +1,7 @@
 package com.example.webapiapp;
 
+import java.util.Objects;
+
 public class Pokemon {
     private String id;
     private String name;
@@ -39,6 +41,20 @@ public class Pokemon {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    //https://stackoverflow.com/questions/4404084/check-if-a-value-exists-in-arraylist
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pokemon pokemon = (Pokemon) o;
+        return Float.compare(pokemon.weight, weight) == 0 && Float.compare(pokemon.height, height) == 0 && base_experience == pokemon.base_experience && Objects.equals(id, pokemon.id) && Objects.equals(name, pokemon.name) && Objects.equals(moves, pokemon.moves) && Objects.equals(abilities, pokemon.abilities) && Objects.equals(image_url, pokemon.image_url) && Objects.equals(sprite_url, pokemon.sprite_url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, weight, height, base_experience, moves, abilities, image_url, sprite_url);
     }
 
     /*
