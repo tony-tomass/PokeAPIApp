@@ -139,8 +139,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     // {} = object
                     String id = pokemon_list.getString("id");
                     String name = pokemon_list.getString("name");
-                    String weight = pokemon_list.getString("weight");
-                    String height = pokemon_list.getString("height");
+                    //String weight = pokemon_list.getString("weight");
+                    Double weight_d = Double.parseDouble(pokemon_list.getString("weight")) / 10;
+                    //String height = pokemon_list.getString("height");
+                    Double height_d = Double.parseDouble(pokemon_list.getString("height")) / 10;
                     String base_xp = pokemon_list.getString("base_experience");
                     JSONArray move_list = pokemon_list.getJSONArray("moves");
                     JSONArray ability_list = pokemon_list.getJSONArray("abilities");
@@ -170,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     String formatted_id = String.format("%04d", Integer.parseInt(id)).trim();
                     nat_num_value_tv.setText("#" + formatted_id);
                     name_value_tv.setText(name.toUpperCase());
-                    weight_value_tv.setText(weight);
-                    height_value_tv.setText(height);
+                    weight_value_tv.setText(weight_d + " kg");
+                    height_value_tv.setText(height_d + " m");
                     base_xp_value_tv.setText(base_xp);
                     move_value_tv.setText(move_0);
                     ability_value_tv.setText(ability_0);
