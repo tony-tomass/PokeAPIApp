@@ -154,13 +154,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             .getJSONObject("other")
                             .getJSONObject("official-artwork")
                             .getString("front_default");
+                    /*
+                    //https://stackoverflow.com/questions/473282/how-can-i-pad-an-integer-with-zeros-on-the-left
+                    //Add leading zeroes to decimal (integer), length of 3 max
+                    String formatted_id = String.format("%03d", Integer.parseInt(id)).trim();
+                    Log.i("num", formatted_id);
+                    String image_url = "https://github.com/HybridShivam/Pokemon/blob/master/assets/images/" + formatted_id + ".png";
+                    */
                     String sprite_url = pokemon_list.getJSONObject("sprites")
                             .getJSONObject("versions")
                             .getJSONObject("generation-viii")
                             .getJSONObject("icons")
                             .getString("front_default");
 
-                    nat_num_value_tv.setText("#" + id);
+                    String formatted_id = String.format("%04d", Integer.parseInt(id)).trim();
+                    nat_num_value_tv.setText("#" + formatted_id);
                     name_value_tv.setText(name.toUpperCase());
                     weight_value_tv.setText(weight);
                     height_value_tv.setText(height);
